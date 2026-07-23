@@ -366,31 +366,31 @@ export default function Hero() {
             </div>
 
             {/* Expanded Code Content (~4x original size) */}
-            <p style={{ margin: 0, color: COLORS.amber }}>// Enterprise Solution Architecture for Tanzania</p>
+            <p style={{ margin: 0, color: COLORS.amber }}>\\ Enterprise Solution Architecture for Tanzania</p>
             <p style={{ margin: "0.5rem 0 0 0", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-              <span style={{ color: COLORS.cyan }}>import</span> {`{ SystemConfig, PaymentGateway }`} <span style={{ color: COLORS.cyan }}>from</span> <span style={{ color: "#9ece6a" }}>"@biashara/core"</span>;{"\n\n"}
+              <span style={{ color: COLORS.cyan }}>import</span> {`{ SystemConfig, PaymentGateway }`} <span style={{ color: COLORS.cyan }}>from</span> <span style={{ color: "#9ece6a" }}>&quot;@biashara/core&quot;</span>;{"\n\n"}
               <span style={{ color: COLORS.cyan }}>const</span> config: SystemConfig = {`{\n`}
-              {"  "}region: <span style={{ color: "#9ece6a" }}>"TZ-EAST"</span>,{"\n"}
-              {"  "}currency: <span style={{ color: "#9ece6a" }}>"TZS"</span>,{"\n"}
+              {"  "}region: <span style={{ color: "#9ece6a" }}>&quot;TZ-EAST&quot;</span>,{"\n"}
+              {"  "}currency: <span style={{ color: "#9ece6a" }}>&quot;TZS&quot;</span>,{"\n"}
               {"  "}localization: {`{\n`}
-              {"    "}primaryLanguage: <span style={{ color: "#9ece6a" }}>"sw_TZ"</span>,{"\n"}
-              {"    "}fallbackLanguage: <span style={{ color: "#9ece6a" }}>"en_US"</span>{"\n"}
+              {"    "}primaryLanguage: <span style={{ color: "#9ece6a" }}>&quot&quot;sw_TZ&quot;</span>,{"\n"}
+              {"    "}fallbackLanguage: <span style={{ color: "#9ece6a" }}>&quot;en_US&quot;</span>{"\n"}
               {"  "}{`}`}{"\n"}
               {`}`};{"\n\n"}
               <span style={{ color: COLORS.cyan }}>const</span> app = <span style={{ color: "#f7768e" }}>createSystem</span>({`{\n`}
-              {"  "}client: <span style={{ color: "#9ece6a" }}>"Biashara Tanzania"</span>,{"\n"}
+              {"  "}client: <span style={{ color: "#9ece6a" }}>&quot;Biashara Tanzania&quot;</span>,{"\n"}
               {"  "}config,{"\n"}
               {"  "}modules: [
-              {"\n    "}<span style={{ color: "#9ece6a" }}>"Sales & Inventory"</span>,
-              {"\n    "}<span style={{ color: "#9ece6a" }}>"VICOBA Group Ledger"</span>,
+              {"\n    "}<span style={{ color: "#9ece6a" }}>&quot;Sales & Inventory&quot;</span>,
+              {"\n    "}<span style={{ color: "#9ece6a" }}>&quot;VICOBA Group Ledger&quot;</span>,
               {"\n  "}],{"\n"}
               {"  "}integrations: {`{\n`}
               {"    "}offlineSync: <span style={{ color: "#f7768e" }}>true</span>{"\n"}
               {"  "}{`}`},{"\n"}
-              {"  "}status: <span style={{ color: "#9ece6a" }}>"Deploying to production..."</span>{"\n"}
+              {"  "}status: <span style={{ color: "#9ece6a" }}>&quot;Deploying to production...&quot;</span>{"\n"}
               {`}`});{"\n\n"}
               <span style={{ color: COLORS.cyan }}>await</span> app.<span style={{ color: "#7aa2f7" }}>initialize</span>();{"\n"}
-              <span style={{ color: "#73daca" }}>console</span>.<span style={{ color: "#7aa2f7" }}>log</span>(<span style={{ color: "#9ece6a" }}>"System live across 26 regions."</span>);
+              <span style={{ color: "#73daca" }}>console</span>.<span style={{ color: "#7aa2f7" }}>log</span>(<span style={{ color: "#9ece6a" }}>&quot;System live across 26 regions.&quot;</span>);
             </p>
           </div>
         </div>
