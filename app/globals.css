@@ -2,14 +2,9 @@
 
 html,
 body {
-  margin: 0;
-  padding: 0;
   background: #0b0f1a;
 }
 
-* {
-  box-sizing: border-box;
-}
 
 /* indigo #0B0F1A */
 /* warm amber #FFB84D */

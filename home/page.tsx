@@ -342,33 +342,55 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Code Snippet (Hidden on very small screens if desired, or stacked via flex-wrap) */}
-        <div style={{ flex: "1 1 320px", maxWidth: "500px", minWidth: "280px" }}>
+        {/* RIGHT COLUMN: Code Snippet */}
+        <div style={{ flex: "1 1 320px", maxWidth: "700px", minWidth: "280px" }}>
           <div
             style={{
               background: "#0d0f12",
               borderRadius: "16px",
               border: "1px solid rgba(255,255,255,0.1)",
-              padding: "1.5rem",
+              padding: "clamp(1.5rem, 3vw, 2.5rem)",
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: "0.85rem",
               color: "#a9b1d6",
               boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
               width: "100%",
+              boxSizing: "border-box",
             }}
           >
-            <div style={{ display: "flex", gap: "6px", marginBottom: "1rem" }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f56" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#27c93f" }} />
+            {/* Window Buttons */}
+            <div style={{ display: "flex", gap: "8px", marginBottom: "1.25rem" }}>
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f56" }} />
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#27c93f" }} />
             </div>
-            <p style={{ margin: 0, color: COLORS.amber }}>// Building solution for Tanzania</p>
-            <p style={{ margin: "0.5rem 0 0 0" }}>
+
+            {/* Expanded Code Content (~4x original size) */}
+            <p style={{ margin: 0, color: COLORS.amber }}>// Enterprise Solution Architecture for Tanzania</p>
+            <p style={{ margin: "0.5rem 0 0 0", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <span style={{ color: COLORS.cyan }}>import</span> {`{ SystemConfig, PaymentGateway }`} <span style={{ color: COLORS.cyan }}>from</span> <span style={{ color: "#9ece6a" }}>"@biashara/core"</span>;{"\n\n"}
+              <span style={{ color: COLORS.cyan }}>const</span> config: SystemConfig = {`{\n`}
+              {"  "}region: <span style={{ color: "#9ece6a" }}>"TZ-EAST"</span>,{"\n"}
+              {"  "}currency: <span style={{ color: "#9ece6a" }}>"TZS"</span>,{"\n"}
+              {"  "}localization: {`{\n`}
+              {"    "}primaryLanguage: <span style={{ color: "#9ece6a" }}>"sw_TZ"</span>,{"\n"}
+              {"    "}fallbackLanguage: <span style={{ color: "#9ece6a" }}>"en_US"</span>{"\n"}
+              {"  "}{`}`}{"\n"}
+              {`}`};{"\n\n"}
               <span style={{ color: COLORS.cyan }}>const</span> app = <span style={{ color: "#f7768e" }}>createSystem</span>({`{\n`}
               {"  "}client: <span style={{ color: "#9ece6a" }}>"Biashara Tanzania"</span>,{"\n"}
-              {"  "}modules: [<span style={{ color: "#9ece6a" }}>"Sales"</span>, <span style={{ color: "#9ece6a" }}>"VICOBA"</span>, <span style={{ color: "#9ece6a" }}>"Payments"</span>],{"\n"}
-              {"  "}status: <span style={{ color: "#9ece6a" }}>"Deploying..."</span>{"\n"}
-              {`}`});
+              {"  "}config,{"\n"}
+              {"  "}modules: [
+              {"\n    "}<span style={{ color: "#9ece6a" }}>"Sales & Inventory"</span>,
+              {"\n    "}<span style={{ color: "#9ece6a" }}>"VICOBA Group Ledger"</span>,
+              {"\n  "}],{"\n"}
+              {"  "}integrations: {`{\n`}
+              {"    "}offlineSync: <span style={{ color: "#f7768e" }}>true</span>{"\n"}
+              {"  "}{`}`},{"\n"}
+              {"  "}status: <span style={{ color: "#9ece6a" }}>"Deploying to production..."</span>{"\n"}
+              {`}`});{"\n\n"}
+              <span style={{ color: COLORS.cyan }}>await</span> app.<span style={{ color: "#7aa2f7" }}>initialize</span>();{"\n"}
+              <span style={{ color: "#73daca" }}>console</span>.<span style={{ color: "#7aa2f7" }}>log</span>(<span style={{ color: "#9ece6a" }}>"System live across 26 regions."</span>);
             </p>
           </div>
         </div>
