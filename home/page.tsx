@@ -239,124 +239,138 @@ export default function Hero() {
           position: "relative",
           minHeight: "100svh",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          flexWrap: "wrap", // Allows stacking on mobile, side-by-side on wide screens
+          alignItems: "center",
           overflow: "hidden",
           padding: "0 clamp(1.5rem, 6vw, 6rem)",
+          gap: "clamp(2rem, 4vw, 4rem)",
         }}
       >
+        {/* Background Glows */}
         <svg
           aria-hidden
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
         >
-          <circle
-            ref={glowARef}
-            cx="12%"
-            cy="20%"
-            r="260"
-            fill={COLORS.amber}
-            opacity={0.14}
-            style={{ filter: "blur(80px)" }}
-          />
-          <circle
-            ref={glowBRef}
-            cx="88%"
-            cy="70%"
-            r="320"
-            fill={COLORS.cyan}
-            opacity={0.1}
-            style={{ filter: "blur(90px)" }}
-          />
+          <circle ref={glowARef} cx="12%" cy="20%" r="260" fill={COLORS.amber} opacity={0.14} style={{ filter: "blur(80px)" }} />
+          <circle ref={glowBRef} cx="88%" cy="70%" r="320" fill={COLORS.cyan} opacity={0.1} style={{ filter: "blur(90px)" }} />
         </svg>
 
-        <p
-          className="hero-cta"
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "0.8rem",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: COLORS.amber,
-            marginBottom: "1.25rem",
-          }}
-        >
-          Ladhata Tech Solution — Dar es Salaam
-        </p>
+        {/* LEFT COLUMN: Text Content */}
+        <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+          <p
+            className="hero-cta"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: "0.8rem",
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: COLORS.amber,
+              marginBottom: "1.25rem",
+            }}
+          >
+            Ladhata Tech Solution — Dar es Salaam
+          </p>
 
-        <h1
-          ref={headlineRef}
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 600,
-            fontSize: "clamp(2.4rem, 7vw, 6rem)",
-            lineHeight: 1.02,
-            letterSpacing: "-0.02em",
-            margin: 0,
-            maxWidth: "18ch",
-          }}
-        >
-          {["Tunabadilisha", "biashara za Tanzania", "kuwa dijitali."].map((line, i) => (
-            <span
-              key={i}
-              style={{ display: "block", overflow: "hidden" }}
-            >
-              <span
-                className="line-inner"
-                style={{ display: "block", visibility: "hidden" }}
-              >
-                {line}
+          <h1
+            ref={headlineRef}
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: "clamp(2.4rem, 7vw, 6rem)",
+              lineHeight: 1.02,
+              letterSpacing: "-0.02em",
+              margin: 0,
+              maxWidth: "18ch",
+            }}
+          >
+            {["Tunabadilisha", "biashara za Tanzania", "kuwa dijitali."].map((line, i) => (
+              <span key={i} style={{ display: "block", overflow: "hidden" }}>
+                <span className="line-inner" style={{ display: "block", visibility: "hidden" }}>
+                  {line}
+                </span>
               </span>
-            </span>
-          ))}
-        </h1>
+            ))}
+          </h1>
 
-        <p
-          ref={subRef}
-          style={{
-            visibility: "hidden",
-            fontFamily: "'Inter', sans-serif",
-            fontSize: "clamp(1rem, 1.6vw, 1.25rem)",
-            color: COLORS.muted,
-            maxWidth: "42ch",
-            marginTop: "1.75rem",
-            lineHeight: 1.6,
-          }}
-        >
-          Kuanzia Simamia — programu ya mauzo na stoki — hadi mifumo ya VICOBA, shule, na
-          malipo. Tunajenga teknolojia inayoeleweka na wafanyabiashara wa kweli.
-        </p>
-
-        <div style={{ display: "flex", gap: "1rem", marginTop: "2.5rem", flexWrap: "wrap" }}>
-          <a
-            href="https://simamia.co.tz"
-            className="hero-cta"
+          <p
+            ref={subRef}
             style={{
-              background: COLORS.amber,
-              color: COLORS.night,
-              padding: "0.85rem 1.75rem",
-              borderRadius: "999px",
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 600,
-              textDecoration: "none",
+              visibility: "hidden",
+              fontFamily: "'Inter', sans-serif",
+              fontSize: "clamp(1rem, 1.6vw, 1.25rem)",
+              color: COLORS.muted,
+              maxWidth: "42ch",
+              marginTop: "1.75rem",
+              lineHeight: 1.6,
             }}
           >
-            Angalia Simamia App
-          </a>
-          <a
-            href="#sequence"
-            className="hero-cta"
+            Kuanzia Simamia — programu ya mauzo na stoki — hadi mifumo ya VICOBA, shule, na
+            malipo. Tunajenga teknolojia inayoeleweka na wafanyabiashara wa kweli.
+          </p>
+
+          <div style={{ display: "flex", gap: "1rem", marginTop: "2.5rem", flexWrap: "wrap" }}>
+            <a
+              href="https://simamia.co.tz"
+              className="hero-cta"
+              style={{
+                background: COLORS.amber,
+                color: COLORS.night,
+                padding: "0.85rem 1.75rem",
+                borderRadius: "999px",
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Angalia Simamia App
+            </a>
+            <a
+              href="#sequence"
+              className="hero-cta"
+              style={{
+                border: `1px solid ${COLORS.muted}`,
+                color: COLORS.paper,
+                padding: "0.85rem 1.75rem",
+                borderRadius: "999px",
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Tunavyojenga
+            </a>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Code Snippet (Hidden on very small screens if desired, or stacked via flex-wrap) */}
+        <div style={{ flex: "1 1 320px", maxWidth: "500px", minWidth: "280px" }}>
+          <div
             style={{
-              border: `1px solid ${COLORS.muted}`,
-              color: COLORS.paper,
-              padding: "0.85rem 1.75rem",
-              borderRadius: "999px",
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 600,
-              textDecoration: "none",
+              background: "#0d0f12",
+              borderRadius: "16px",
+              border: "1px solid rgba(255,255,255,0.1)",
+              padding: "1.5rem",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: "0.85rem",
+              color: "#a9b1d6",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.5)",
+              width: "100%",
             }}
           >
-            Tunavyojenga
-          </a>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "1rem" }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f56" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#27c93f" }} />
+            </div>
+            <p style={{ margin: 0, color: COLORS.amber }}>// Building solution for Tanzania</p>
+            <p style={{ margin: "0.5rem 0 0 0" }}>
+              <span style={{ color: COLORS.cyan }}>const</span> app = <span style={{ color: "#f7768e" }}>createSystem</span>({`{\n`}
+              {"  "}client: <span style={{ color: "#9ece6a" }}>"Biashara Tanzania"</span>,{"\n"}
+              {"  "}modules: [<span style={{ color: "#9ece6a" }}>"Sales"</span>, <span style={{ color: "#9ece6a" }}>"VICOBA"</span>, <span style={{ color: "#9ece6a" }}>"Payments"</span>],{"\n"}
+              {"  "}status: <span style={{ color: "#9ece6a" }}>"Deploying..."</span>{"\n"}
+              {`}`});
+            </p>
+          </div>
         </div>
       </section>
 
