@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,18 +17,20 @@ export const useLenis = () => useContext(LenisContext);
  * the two libraries.
  */
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<Lenis | null>(null);
-
-  useEffect(() => {
-    const lenis = new Lenis({
+  // Create Lenis once during the initial render via lazy state initializer.
+  // This avoids calling setState inside an effect, which ESLint flags.
+  const [lenis] = useState(() => {
+    const instance = new Lenis({
       duration: 1.15,
       easing: (t: number) => 1 - Math.pow(1 - t, 4), // quart-out, weighty but responsive
       smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 1.2,
     });
-    lenisRef.current = lenis;
+    return instance;
+  });
 
+  useEffect(() => {
     lenis.on("scroll", ScrollTrigger.update);
 
     gsap.ticker.add((time) => {
@@ -45,10 +47,10 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       lenis.destroy();
       gsap.ticker.remove((time) => lenis.raf(time * 1000));
     };
-  }, []);
+  }, [lenis]);
 
   return (
-    <LenisContext.Provider value={lenisRef.current}>
+    <LenisContext.Provider value={lenis}>
       {children}
     </LenisContext.Provider>
   );

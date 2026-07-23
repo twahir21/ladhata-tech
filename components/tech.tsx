@@ -289,5 +289,5 @@ export default function LadhataHero() {
           </div>
         </div>
       </section>
-  );
+   );
 }
