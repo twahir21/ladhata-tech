@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
-import { DashboardMock } from "./DashboardMock";
+import { DashboardMock } from "./mocks/DashboardMock";
 
 const COLORS = {
   night: "#0B0F1A",
