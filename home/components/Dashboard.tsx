@@ -1,11 +1,7 @@
 "use client";
 
+import { COLORS } from "@/const/colors";
 import { forwardRef } from "react";
-
-const COLORS = {
-  night: "#0B0F1A",
-  paper: "#F4F1EA",
-};
 
 export const DashboardSection = forwardRef<HTMLElement>(function DashboardSection(_props, ref) {
   return (

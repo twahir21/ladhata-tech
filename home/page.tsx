@@ -9,17 +9,9 @@ import { useHorizontalShowcase } from "@/hooks/useHorizontalShow";
 import { HeroSection } from "./components/Hero";
 import { StorySection } from "./components/Story";
 import { HorizontalShowcaseSection } from "./components/Showcase";
+import { COLORS } from "@/const/colors";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const COLORS = {
-  night: "#0B0F1A",
-  surface: "#131A2B",
-  amber: "#FFB84D",
-  cyan: "#4DD0E1",
-  paper: "#F4F1EA",
-  muted: "#7C8598",
-};
 
 export default function HomePage() {
   const rootRef = useRef<HTMLDivElement | null>(null);

@@ -4,13 +4,7 @@ import { forwardRef } from "react";
 import { DashboardMock } from "./mocks/DashboardMock";
 import { MobileMock } from "./mocks/MobileMock";
 import { BackendMock } from "./mocks/BackendMock";
-
-const COLORS = {
-  night: "#0B0F1A",
-  amber: "#FFB84D",
-  paper: "#F4F1EA",
-  muted: "#7C8598",
-};
+import { COLORS } from "@/const/colors";
 
 interface Props {
   trackRef: React.RefObject<HTMLDivElement | null>;
