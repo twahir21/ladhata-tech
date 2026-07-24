@@ -8,9 +8,11 @@ type HeroProps = {
   subRef: RefObject<HTMLParagraphElement | null>;
   codeBlockRef: RefObject<HTMLParagraphElement | null>;
   codePanelRef: RefObject<HTMLDivElement | null>;
+  heroRef:  RefObject<HTMLElement | null>;
 };
 
 export const HeroSection = ({
+  heroRef,       // add this prop
   glowARef,
   glowBRef,
   COLORS,
@@ -20,6 +22,7 @@ export const HeroSection = ({
   codePanelRef,
 }: HeroProps) => (
   <section
+    ref={heroRef}
     style={{
       position: "relative",
       minHeight: "100svh",
@@ -68,19 +71,13 @@ export const HeroSection = ({
           maxWidth: "18ch",
         }}
       >
-        {["Tunabadilisha", "biashara za Tanzania", "kuwa dijitali."].map((line, i) => (
-          <span key={i} style={{ display: "block", overflow: "hidden" }}>
-            <span className="line-inner" style={{ display: "block", visibility: "hidden" }}>
-              {line}
-            </span>
-          </span>
-        ))}
+
+        Tunabadilisha Biashara za Tanzania Kukua Kidigitali
       </h1>
 
       <p
         ref={subRef}
         style={{
-          visibility: "hidden",
           fontFamily: "var(--font-inter), sans-serif",
           fontSize: "clamp(1rem, 1.6vw, 1.25rem)",
           color: COLORS.muted,
