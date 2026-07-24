@@ -31,11 +31,11 @@ export default function Hero() {
   const codePanelRef = useRef<HTMLDivElement | null>(null);
   const storyRef = useRef<HTMLElement>(null);
 
-  useCodeDropScatter({ heroRef, codePanelRef, codeBlockRef, storyRef });
+  useCodeDropScatter({ heroRef, codePanelRef, codeBlockRef, storyRef, rootRef });
 
 
   return (
-    <div ref={rootRef} style={{ background: COLORS.night, color: COLORS.paper }}>
+    <div ref={rootRef} style={{ position: "relative", background: COLORS.night, color: COLORS.paper }}>
       <HeroSection
         heroRef={heroRef}
         COLORS={COLORS}

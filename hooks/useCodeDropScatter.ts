@@ -12,6 +12,7 @@ interface Options {
   codePanelRef: React.RefObject<HTMLElement | null>;
   codeBlockRef: React.RefObject<HTMLElement | null>;
   storyRef: React.RefObject<HTMLElement | null>;
+  rootRef: React.RefObject<HTMLElement | null>; // add this
 }
 
 export function useCodeDropScatter({
@@ -19,9 +20,16 @@ export function useCodeDropScatter({
   codePanelRef,
   codeBlockRef,
   storyRef,
+  rootRef,
 }: Options) {
   useLayoutEffect(() => {
-    if (!heroRef.current || !codePanelRef.current || !codeBlockRef.current || !storyRef.current) {
+    if (
+      !heroRef.current ||
+      !codePanelRef.current ||
+      !codeBlockRef.current ||
+      !storyRef.current ||
+      !rootRef.current
+    ) {
       return;
     }
 
@@ -33,19 +41,20 @@ export function useCodeDropScatter({
     const ctx = gsap.context(() => {
       const chars = splitChars(codeBlockRef.current!);
       const story = storyRef.current!;
+      const root = rootRef.current!;
 
-      // Layer lives INSIDE the story section — a real DOM child, not a
-      // viewport-fixed overlay. It scrolls with the page like everything else.
       layer = document.createElement("div");
       layer.style.position = "absolute";
       layer.style.inset = "0";
       layer.style.pointerEvents = "none";
-      layer.style.zIndex = "5";
-      story.appendChild(layer);
+      layer.style.zIndex = "50"; // clears Hero's 1 AND Story's 2
+      root.appendChild(layer);   // shared ancestor, not story
 
-      // Capture positions in PAGE coordinates (rect + current scroll offset).
-      // This is what makes the offset scroll-independent: it's a fixed point
-      // in the document, not a snapshot of "where things are on screen right now."
+      // Coordinates now anchored to ROOT's page position, not story's
+      const rootRect = root.getBoundingClientRect();
+      const rootPageX = rootRect.left + window.scrollX;
+      const rootPageY = rootRect.top + window.scrollY;
+
       const storyRect = story.getBoundingClientRect();
       const storyPageX = storyRect.left + window.scrollX;
       const storyPageY = storyRect.top + window.scrollY;
@@ -59,11 +68,8 @@ export function useCodeDropScatter({
         const clone = document.createElement("span");
         clone.textContent = char.textContent;
         clone.style.position = "absolute";
-        // Relative to story's own top-left, in document space — lands the
-        // clone exactly where the hero char visually sits, whatever the
-        // current scroll position is.
-        clone.style.left = `${pageX - storyPageX}px`;
-        clone.style.top = `${pageY - storyPageY}px`;
+        clone.style.left = `${pageX - rootPageX}px`; // relative to root, not story
+        clone.style.top = `${pageY - rootPageY}px`;
         clone.style.color = style.color;
         clone.style.font = style.font;
         clone.style.opacity = "0";
@@ -75,33 +81,26 @@ export function useCodeDropScatter({
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: story,
-          start: "top bottom", // story's top hits viewport bottom — it's just starting to enter
-          end: "top top",      // story's top hits viewport top — it now fully fills the viewport
+          start: "top bottom",
+          end: "top top",
           scrub: 1,
         },
       });
 
-      // Release: hero's card and live chars fade as the "handoff" happens
       tl.to(codePanelRef.current, { opacity: 0, y: -40, duration: 0.2, ease: "power1.in" }, 0)
         .set(chars, { opacity: 0 }, 0.15);
 
-      // Scatter each clone to a random resting spot inside the story section
+      // Scatter targets: story's box, but expressed in ROOT-relative coords
+      // since that's the coordinate space the clones now live in
       clones.forEach((clone, i) => {
-        const targetX = gsap.utils.random(0, Math.max(story.clientWidth - 20, 0));
-        const targetY = gsap.utils.random(story.clientHeight * 0.15, story.clientHeight * 0.85);
+        const targetX = storyPageX - rootPageX + gsap.utils.random(0, Math.max(story.clientWidth - 20, 0));
+        const targetY = storyPageY - rootPageY + gsap.utils.random(story.clientHeight * 0.15, story.clientHeight * 0.85);
         const rotate = gsap.utils.random(-50, 50);
-        const startDelay = (i / clones.length) * 0.5; // rain-like stagger
+        const startDelay = (i / clones.length) * 0.5;
 
         tl.to(
           clone,
-          {
-            left: targetX,
-            top: targetY,
-            rotate,
-            opacity: 0.9,
-            duration: 1,
-            ease: "power2.in", // accelerating, gravity-like fall
-          },
+          { left: targetX, top: targetY, rotate, opacity: 0.9, duration: 1, ease: "power2.in" },
           startDelay
         );
       });
@@ -111,5 +110,5 @@ export function useCodeDropScatter({
       ctx.revert();
       layer?.remove();
     };
-  }, [heroRef, codePanelRef, codeBlockRef, storyRef]);
+  }, [heroRef, codePanelRef, codeBlockRef, storyRef, rootRef]);
 }
