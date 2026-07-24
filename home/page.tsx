@@ -3,10 +3,12 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { HeroSection } from "@/home/components/Hero";
-import { useCodeDropScatter } from "@/hooks/useCodeDropScatter";
-import { StorySection } from "./components/Story";
 
+import { useCodeDropScatter } from "@/hooks/useCodeDropScatter";
+import { useStoryToDashboardZoom } from "@/hooks/useStoryToDashboardZoom";
+import { HeroSection } from "./components/Hero";
+import { StorySection } from "./components/Story";
+import { DashboardSection } from "./components/Dashboard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,20 +21,21 @@ const COLORS = {
   muted: "#7C8598",
 };
 
-export default function Hero() {
+export default function HomePage() {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const headlineRef = useRef<HTMLHeadingElement | null>(null);
   const subRef = useRef<HTMLParagraphElement | null>(null);
   const glowARef = useRef<SVGCircleElement | null>(null);
   const glowBRef = useRef<SVGCircleElement | null>(null);
   const heroRef = useRef<HTMLElement>(null);
-
   const codeBlockRef = useRef<HTMLParagraphElement | null>(null);
   const codePanelRef = useRef<HTMLDivElement | null>(null);
   const storyRef = useRef<HTMLElement>(null);
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  const dashboardRef = useRef<HTMLElement>(null);
 
   useCodeDropScatter({ heroRef, codePanelRef, codeBlockRef, storyRef, rootRef });
-
+  useStoryToDashboardZoom({ storyRef, frameRef });
 
   return (
     <div ref={rootRef} style={{ position: "relative", background: COLORS.night, color: COLORS.paper }}>
@@ -46,9 +49,8 @@ export default function Hero() {
         codeBlockRef={codeBlockRef}
         codePanelRef={codePanelRef}
       />
-
-      <StorySection ref={storyRef} />
-
+      <StorySection ref={storyRef} frameRef={frameRef} />
+      <DashboardSection ref={dashboardRef} />
     </div>
   );
 }
