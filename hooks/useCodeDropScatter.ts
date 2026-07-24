@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { splitChars } from "@/components/SplitChars";
@@ -8,10 +8,10 @@ import { splitChars } from "@/components/SplitChars";
 gsap.registerPlugin(ScrollTrigger);
 
 interface Options {
-  heroRef: React.RefObject<HTMLElement | null>;      // outer <section> to pin
-  codePanelRef: React.RefObject<HTMLElement | null>; // the dark code card (fades on release)
-  codeBlockRef: React.RefObject<HTMLElement | null>; // the <p> holding the code text
-  storyRef: React.RefObject<HTMLElement | null>;     // #sequence section (drop target)
+  heroRef: React.RefObject<HTMLElement | null>;
+  codePanelRef: React.RefObject<HTMLElement | null>;
+  codeBlockRef: React.RefObject<HTMLElement | null>;
+  storyRef: React.RefObject<HTMLElement | null>;
 }
 
 export function useCodeDropScatter({
@@ -20,8 +20,6 @@ export function useCodeDropScatter({
   codeBlockRef,
   storyRef,
 }: Options) {
-  const overlayRef = useRef<HTMLDivElement | null>(null);
-
   useLayoutEffect(() => {
     if (!heroRef.current || !codePanelRef.current || !codeBlockRef.current || !storyRef.current) {
       return;
@@ -30,85 +28,88 @@ export function useCodeDropScatter({
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
+    let layer: HTMLDivElement | null = null;
+
     const ctx = gsap.context(() => {
-      // 1. Split into individual char spans. Because each char span sits inside
-      // the same colored <span> the JSX already uses (cyan keywords, green
-      // strings, etc.), it inherits `color` from its parent — no re-coloring needed.
       const chars = splitChars(codeBlockRef.current!);
+      const story = storyRef.current!;
 
-      // 2. Overlay layer, fixed to viewport, unaffected by any section's
-      // overflow:hidden or the Hero's pin transform.
-      const overlay = document.createElement("div");
-      overlay.style.position = "fixed";
-      overlay.style.inset = "0";
-      overlay.style.pointerEvents = "none";
-      overlay.style.zIndex = "40";
-      document.body.appendChild(overlay);
-      overlayRef.current = overlay;
+      // Layer lives INSIDE the story section — a real DOM child, not a
+      // viewport-fixed overlay. It scrolls with the page like everything else.
+      layer = document.createElement("div");
+      layer.style.position = "absolute";
+      layer.style.inset = "0";
+      layer.style.pointerEvents = "none";
+      layer.style.zIndex = "5";
+      story.appendChild(layer);
 
-      // 3. Clone each char exactly where it currently sits on screen, with the
-      // same computed color/font, so swapping original -> clone is invisible.
+      // Capture positions in PAGE coordinates (rect + current scroll offset).
+      // This is what makes the offset scroll-independent: it's a fixed point
+      // in the document, not a snapshot of "where things are on screen right now."
+      const storyRect = story.getBoundingClientRect();
+      const storyPageX = storyRect.left + window.scrollX;
+      const storyPageY = storyRect.top + window.scrollY;
+
       const clones = chars.map((char) => {
         const rect = char.getBoundingClientRect();
         const style = getComputedStyle(char);
+        const pageX = rect.left + window.scrollX;
+        const pageY = rect.top + window.scrollY;
+
         const clone = document.createElement("span");
         clone.textContent = char.textContent;
-        clone.style.position = "fixed";
-        clone.style.left = `${rect.left}px`;
-        clone.style.top = `${rect.top}px`;
+        clone.style.position = "absolute";
+        // Relative to story's own top-left, in document space — lands the
+        // clone exactly where the hero char visually sits, whatever the
+        // current scroll position is.
+        clone.style.left = `${pageX - storyPageX}px`;
+        clone.style.top = `${pageY - storyPageY}px`;
         clone.style.color = style.color;
         clone.style.font = style.font;
         clone.style.opacity = "0";
         clone.style.willChange = "transform, opacity";
-        overlay.appendChild(clone);
+        layer!.appendChild(clone);
         return clone;
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "+=150%", // distance the pin holds while the drop plays out
+          trigger: story,
+          start: "top bottom", // story's top hits viewport bottom — it's just starting to enter
+          end: "top top",      // story's top hits viewport top — it now fully fills the viewport
           scrub: 1,
-          pin: true,
         },
       });
 
-      // Release: card lifts slightly and fades, live chars vanish, clones take over
-      tl.to(codePanelRef.current, { opacity: 0, y: -60, duration: 0.25, ease: "power1.in" }, 0)
-        .set(chars, { opacity: 0 }, 0.2)
-        .set(clones, { opacity: 1 }, 0.2);
+      // Release: hero's card and live chars fade as the "handoff" happens
+      tl.to(codePanelRef.current, { opacity: 0, y: -40, duration: 0.2, ease: "power1.in" }, 0)
+        .set(chars, { opacity: 0 }, 0.15);
 
-      // Scatter each clone into a random spot inside the story section
-      const storyRect = storyRef.current!.getBoundingClientRect();
-
-      clones.forEach((clone) => {
-        const start = clone.getBoundingClientRect();
-        const targetX = storyRect.left + Math.random() * storyRect.width - start.left;
-        const targetY = storyRect.top + Math.random() * (storyRect.height * 0.7) - start.top;
+      // Scatter each clone to a random resting spot inside the story section
+      clones.forEach((clone, i) => {
+        const targetX = gsap.utils.random(0, Math.max(story.clientWidth - 20, 0));
+        const targetY = gsap.utils.random(story.clientHeight * 0.15, story.clientHeight * 0.85);
         const rotate = gsap.utils.random(-50, 50);
-        const delay = gsap.utils.random(0, 0.5); // staggers the "rain" naturally
+        const startDelay = (i / clones.length) * 0.5; // rain-like stagger
 
         tl.to(
           clone,
           {
-            x: targetX,
-            y: targetY,
+            left: targetX,
+            top: targetY,
             rotate,
+            opacity: 0.9,
             duration: 1,
-            ease: "power2.in", // accelerating fall, like gravity
+            ease: "power2.in", // accelerating, gravity-like fall
           },
-          0.25 + delay
+          startDelay
         );
       });
-
-      // Optional: settle — slight dim once landed
-      tl.to(clones, { opacity: 0.85, duration: 0.2 }, "-=0.1");
     }, heroRef);
 
     return () => {
       ctx.revert();
-      overlayRef.current?.remove();
+      layer?.remove();
     };
   }, [heroRef, codePanelRef, codeBlockRef, storyRef]);
 }
