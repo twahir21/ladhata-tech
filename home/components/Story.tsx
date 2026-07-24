@@ -44,7 +44,7 @@ export const StorySection = forwardRef<HTMLElement>(function StorySection(_props
       }}
     >
       {/* Faint background glow so scattered chars have some depth to land on */}
-      <div
+      {/* <div
         aria-hidden
         style={{
           position: "absolute",
@@ -135,7 +135,7 @@ export const StorySection = forwardRef<HTMLElement>(function StorySection(_props
             </p>
           </div>
         ))}
-      </div>
+      </div> */}
     </section>
   );
 });
