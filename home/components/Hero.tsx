@@ -12,7 +12,7 @@ type HeroProps = {
 };
 
 export const HeroSection = ({
-  heroRef,       // add this prop
+  heroRef, // add this prop
   glowARef,
   glowBRef,
   COLORS,
@@ -37,10 +37,32 @@ export const HeroSection = ({
     {/* Background Glows */}
     <svg
       aria-hidden
-      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+      }}
     >
-      <circle ref={glowARef} cx="12%" cy="20%" r="260" fill={COLORS.amber} opacity={0.14} style={{ filter: "blur(80px)" }} />
-      <circle ref={glowBRef} cx="88%" cy="70%" r="320" fill={COLORS.cyan} opacity={0.1} style={{ filter: "blur(90px)" }} />
+      <circle
+        ref={glowARef}
+        cx="12%"
+        cy="20%"
+        r="260"
+        fill={COLORS.amber}
+        opacity={0.14}
+        style={{ filter: "blur(80px)" }}
+      />
+      <circle
+        ref={glowBRef}
+        cx="88%"
+        cy="70%"
+        r="320"
+        fill={COLORS.cyan}
+        opacity={0.1}
+        style={{ filter: "blur(90px)" }}
+      />
     </svg>
 
     {/* LEFT COLUMN: Text Content */}
@@ -71,8 +93,7 @@ export const HeroSection = ({
           maxWidth: "18ch",
         }}
       >
-
-        Tunabadilisha Biashara za Tanzania Kukua Kidigitali
+        Waandishi wa Mifumo na Programu za Kidigitali Tanzania
       </h1>
 
       <p
@@ -86,11 +107,21 @@ export const HeroSection = ({
           lineHeight: 1.6,
         }}
       >
-        Kuanzia Simamia — programu ya mauzo na stoki — hadi mifumo ya VICOBA, shule, na
-        malipo. Tunajenga teknolojia inayoeleweka na wafanyabiashara wa kweli.
+        Tunatengeneza programu za simu na mifumo ya wavuti (Full-Stack
+        Development) inayotatua changamoto halisi za kibiashara. Tulianza safari
+        yetu na Simamia App—suluhisho la mauzo na stoki—na sasa tunajenga mifumo
+        maalum ya VICOBA, shule, na malipo inayoeleweka na kurahisisha
+        uendeshaji wa biashara za Kitanzania.
       </p>
 
-      <div style={{ display: "flex", gap: "1rem", marginTop: "2.5rem", flexWrap: "wrap" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "1rem",
+          marginTop: "2.5rem",
+          flexWrap: "wrap",
+        }}
+      >
         <a
           href="https://simamia.co.tz"
           className="hero-cta"
@@ -146,38 +177,97 @@ export const HeroSection = ({
       >
         {/* Window Buttons */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "1.25rem" }}>
-          <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f56" }} />
-          <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
-          <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#27c93f" }} />
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              background: "#ff5f56",
+            }}
+          />
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              background: "#ffbd2e",
+            }}
+          />
+          <div
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: "50%",
+              background: "#27c93f",
+            }}
+          />
         </div>
 
         <p
           ref={codeBlockRef}
-          style={{ margin: "0.5rem 0 0 0", whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+          style={{
+            margin: "0.5rem 0 0 0",
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-word",
+          }}
         >
-          <span style={{ color: COLORS.cyan }}>import</span> {`{ SystemConfig, PaymentGateway }`} <span style={{ color: COLORS.cyan }}>from</span> <span style={{ color: "#9ece6a" }}>&quot;@biashara/core&quot;</span>;{"\n\n"}
-          <span style={{ color: COLORS.cyan }}>const</span> config: SystemConfig = {`{\n`}
-          {"  "}region: <span style={{ color: "#9ece6a" }}>&quot;TZ-EAST&quot;</span>,{"\n"}
-          {"  "}currency: <span style={{ color: "#9ece6a" }}>&quot;TZS&quot;</span>,{"\n"}
+          <span style={{ color: COLORS.cyan }}>import</span>{" "}
+          {`{ SystemConfig, PaymentGateway }`}{" "}
+          <span style={{ color: COLORS.cyan }}>from</span>{" "}
+          <span style={{ color: "#9ece6a" }}>&quot;@biashara/core&quot;</span>;
+          {"\n\n"}
+          <span style={{ color: COLORS.cyan }}>const</span> config: SystemConfig
+          = {`{\n`}
+          {"  "}region:{" "}
+          <span style={{ color: "#9ece6a" }}>&quot;TZ-EAST&quot;</span>,{"\n"}
+          {"  "}currency:{" "}
+          <span style={{ color: "#9ece6a" }}>&quot;TZS&quot;</span>,{"\n"}
           {"  "}localization: {`{\n`}
-          {"    "}primaryLanguage: <span style={{ color: "#9ece6a" }}>&quot;sw_TZ&quot;</span>,{"\n"}
-          {"    "}fallbackLanguage: <span style={{ color: "#9ece6a" }}>&quot;en_US&quot;</span>{"\n"}
-          {"  "}{`}`}{"\n"}
+          {"    "}primaryLanguage:{" "}
+          <span style={{ color: "#9ece6a" }}>&quot;sw_TZ&quot;</span>,{"\n"}
+          {"    "}fallbackLanguage:{" "}
+          <span style={{ color: "#9ece6a" }}>&quot;en_US&quot;</span>
+          {"\n"}
+          {"  "}
+          {`}`}
+          {"\n"}
           {`}`};{"\n\n"}
-          <span style={{ color: COLORS.cyan }}>const</span> app = <span style={{ color: "#f7768e" }}>createSystem</span>({`{\n`}
-          {"  "}client: <span style={{ color: "#9ece6a" }}>&quot;Biashara Tanzania&quot;</span>,{"\n"}
+          <span style={{ color: COLORS.cyan }}>const</span> app ={" "}
+          <span style={{ color: "#f7768e" }}>createSystem</span>({`{\n`}
+          {"  "}client:{" "}
+          <span style={{ color: "#9ece6a" }}>
+            &quot;Biashara Tanzania&quot;
+          </span>
+          ,{"\n"}
           {"  "}config,{"\n"}
-          {"  "}modules: [
-          {"\n    "}<span style={{ color: "#9ece6a" }}>&quot;Sales & Inventory&quot;</span>,
-          {"\n    "}<span style={{ color: "#9ece6a" }}>&quot;VICOBA Group Ledger&quot;</span>,
-          {"\n  "}],{"\n"}
+          {"  "}modules: [{"\n    "}
+          <span style={{ color: "#9ece6a" }}>
+            &quot;Sales & Inventory&quot;
+          </span>
+          ,{"\n    "}
+          <span style={{ color: "#9ece6a" }}>
+            &quot;VICOBA Group Ledger&quot;
+          </span>
+          ,{"\n  "}],{"\n"}
           {"  "}integrations: {`{\n`}
-          {"    "}offlineSync: <span style={{ color: "#f7768e" }}>true</span>{"\n"}
-          {"  "}{`}`},{"\n"}
-          {"  "}status: <span style={{ color: "#9ece6a" }}>&quot;Deploying to production...&quot;</span>{"\n"}
+          {"    "}offlineSync: <span style={{ color: "#f7768e" }}>true</span>
+          {"\n"}
+          {"  "}
+          {`}`},{"\n"}
+          {"  "}status:{" "}
+          <span style={{ color: "#9ece6a" }}>
+            &quot;Deploying to production...&quot;
+          </span>
+          {"\n"}
           {`}`});{"\n\n"}
-          <span style={{ color: COLORS.cyan }}>await</span> app.<span style={{ color: "#7aa2f7" }}>initialize</span>();{"\n"}
-          <span style={{ color: "#73daca" }}>console</span>.<span style={{ color: "#7aa2f7" }}>log</span>(<span style={{ color: "#9ece6a" }}>&quot;System live across 26 regions.&quot;</span>);
+          <span style={{ color: COLORS.cyan }}>await</span> app.
+          <span style={{ color: "#7aa2f7" }}>initialize</span>();{"\n"}
+          <span style={{ color: "#73daca" }}>console</span>.
+          <span style={{ color: "#7aa2f7" }}>log</span>(
+          <span style={{ color: "#9ece6a" }}>
+            &quot;System live across 26 regions.&quot;
+          </span>
+          );
         </p>
       </div>
     </div>
