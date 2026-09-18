@@ -31,7 +31,7 @@ export const HeroSection = ({
       alignItems: "center",
       overflow: "hidden",
       padding: "clamp(6rem, 12vh, 8rem) clamp(1.5rem, 6vw, 6rem) clamp(3rem, 6vh, 4rem)",
-      gap: "clamp(2rem, 4vw, 4rem)",
+      gap: "clamp(1rem, 2vw, 2rem)",
     }}
   >
     {/* Background Glows */}
@@ -93,7 +93,7 @@ export const HeroSection = ({
           maxWidth: "18ch",
         }}
       >
-        We turn ideas into production-ready digital products.
+        We turn ideas into Systems.
       </h1>
 
       <p

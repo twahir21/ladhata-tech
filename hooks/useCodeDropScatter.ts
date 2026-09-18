@@ -48,6 +48,8 @@ export function useCodeDropScatter({
       layer.style.inset = "0";
       layer.style.pointerEvents = "none";
       layer.style.zIndex = "50"; // clears Hero's 1 AND Story's 2
+      // Handle so useStoryToDashboardZoom can fade this layer out once the "I" fills the screen
+      layer.dataset.codeScatter = "true";
       root.appendChild(layer);   // shared ancestor, not story
 
       // Coordinates now anchored to ROOT's page position, not story's

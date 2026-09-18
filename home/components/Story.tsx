@@ -59,7 +59,7 @@ export const StorySection = forwardRef<HTMLElement, StoryProps>(function StorySe
             letterSpacing: "-0.04em",
           }}
         >
-          T
+          TWILE
         </span>
       </div>
     </section>
