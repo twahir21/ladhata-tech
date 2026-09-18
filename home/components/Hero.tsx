@@ -30,7 +30,7 @@ export const HeroSection = ({
       flexWrap: "wrap", // Allows stacking on mobile, side-by-side on wide screens
       alignItems: "center",
       overflow: "hidden",
-      padding: "0 clamp(1.5rem, 6vw, 6rem)",
+      padding: "clamp(6rem, 12vh, 8rem) clamp(1.5rem, 6vw, 6rem) clamp(3rem, 6vh, 4rem)",
       gap: "clamp(2rem, 4vw, 4rem)",
     }}
   >
@@ -110,7 +110,75 @@ export const HeroSection = ({
         We design and engineer complete software solutions—from SaaS platforms and web applications to mobile apps, APIs, cloud infrastructure, and hosting in Tanzania
       </p>
 
-      <p>By BlackCoder × BlueHacker</p>
+      {/* Creator Attribution Badge */}
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.6rem",
+          marginTop: "1.75rem",
+          padding: "0.4rem 0.9rem",
+          borderRadius: "999px",
+          background: "rgba(19, 26, 43, 0.75)",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.25)",
+          width: "fit-content",
+        }}
+      >
+        <span
+          style={{
+            display: "inline-block",
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+            background: COLORS.cyan,
+            boxShadow: `0 0 10px ${COLORS.cyan}`,
+          }}
+        />
+        <span
+          style={{
+            fontFamily: "var(--font-jetbrains-mono), monospace",
+            fontSize: "0.75rem",
+            color: COLORS.muted,
+            letterSpacing: "0.02em",
+          }}
+        >
+          By
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--font-jetbrains-mono), monospace",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            color: COLORS.cyan,
+            borderRadius: "6px",
+            letterSpacing: "0.02em",
+          }}
+        >
+          BlackCoder
+        </span>
+        <span
+          style={{
+            color: COLORS.amber,
+            fontWeight: 700,
+            fontSize: "0.75rem",
+          }}
+        >
+          &times;
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--font-jetbrains-mono), monospace",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+            color: "#818cf8",
+            letterSpacing: "0.02em",
+          }}
+        >
+          BlueHacker 🇹🇿
+        </span>
+      </div>
 
       <div
         style={{

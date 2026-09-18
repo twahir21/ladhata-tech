@@ -3,9 +3,26 @@
 html,
 body {
   background: #0b0f1a;
+  color: #f4f1ea;
+  scroll-behavior: smooth;
 }
 
+::selection {
+  background: rgba(77, 208, 225, 0.3);
+  color: #ffffff;
+}
 
-/* indigo #0B0F1A */
-/* warm amber #FFB84D */
-/* digital signal #4DD0E1 */
+/* Custom dark scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f1a;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
