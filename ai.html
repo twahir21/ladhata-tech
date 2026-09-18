@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twile Tech — Idea to Production</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #0A0D10;
+            --bg-raised: #0E1216;
+            --bg-panel: #10151A;
+            --line: rgba(255, 255, 255, 0.08);
+            --line-strong: rgba(255, 255, 255, 0.14);
+            --ink: #E9EDEF;
+            --ink-dim: #8B9598;
+            --ink-faint: #565F63;
+            --teal: #4DD0E1;
+            --amber: #FFB84D;
+            --teal-dim: rgba(77, 208, 225, 0.12);
+            --amber-dim: rgba(255, 184, 77, 0.12);
+        }
+
+        :root:not([data-theme="light"]) {
+            color-scheme: dark;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme="dark"]) {
+                --bg: #0A0D10;
+                --bg-raised: #0E1216;
+                --bg-panel: #10151A;
+                --ink: #E9EDEF;
+                --ink-dim: #8B9598;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background: var(--bg);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        ::selection {
+            background: var(--teal);
+            color: #04141A;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .section {
+            position: relative;
+            width: 100%;
+        }
+
+        .edge-line {
+            border-color: var(--line);
+        }
+
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 60;
+            opacity: .035;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
+
+        .glow-amber {
+            box-shadow: 0 0 40px -8px rgba(255, 184, 77, 0.35);
+        }
+
+        .glow-teal {
+            box-shadow: 0 0 40px -8px rgba(77, 208, 225, 0.35);
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, #FFC569, var(--amber));
+            color: #201200;
+            font-weight: 600;
+            transition: transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -8px rgba(255, 184, 77, 0.5);
+        }
+
+        .btn-ghost {
+            border: 1px solid var(--line-strong);
+            color: var(--ink);
+            transition: border-color .25s ease, background .25s ease;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--teal);
+            background: var(--teal-dim);
+        }
+
+        .card-hud {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border: 1px solid var(--line);
+            backdrop-filter: blur(6px);
+        }
+
+        .tag-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .72rem;
+            letter-spacing: .04em;
+            padding: .4rem .8rem;
+            border: 1px solid var(--line-strong);
+            border-radius: 999px;
+            color: var(--ink-dim);
+        }
+
+        #hero-code {
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .letter-t {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 22vw;
+            line-height: 1;
+            color: var(--ink);
+            -webkit-text-stroke: 1px var(--line-strong);
+        }
+
+        .triad-track {
+            display: flex;
+            width: 300vw;
+            height: 100vh;
+        }
+
+        .triad-panel {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .counter {
+            font-family: 'JetBrains Mono', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .pillar-card {
+            transition: transform .35s cubic-bezier(.2, .8, .2, 1), border-color .35s ease;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--teal);
+        }
+
+        .terminal-window {
+            background: #04070A;
+            border: 1px solid var(--line-strong);
+        }
+
+        .terminal-line {
+            opacity: 0;
+        }
+
+        .step-opt {
+            cursor: pointer;
+            transition: border-color .2s ease, background .2s ease;
+        }
+
+        .step-opt[data-active="true"] {
+            border-color: var(--amber);
+            background: var(--amber-dim);
+        }
+
+        .scroll-hint {
+            animation: bob 2.2s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
+        }
+
+        code,
+        .codebox {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tok-kw {
+            color: #C88CFF;
+        }
+
+        .tok-str {
+            color: #9CE39C;
+        }
+
+        .tok-fn {
+            color: #4DD0E1;
+        }
+
+        .tok-com {
+            color: #565F63;
+        }
+
+        .tok-num {
+            color: #FFB84D;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--line-strong);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="grain"></div>
+
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 right-0 z-50 content-layer">
+        <div class="max-w-7xl mx-auto px-6 md:px-10 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="mono text-sm tracking-wide" style="color:var(--teal)">twile://</span>
+                <span class="font-display font-semibold tracking-tight">Twile Tech</span>
+            </div>
+            <a href="#launchpad" class="hidden sm:inline-flex btn-ghost rounded-full px-5 py-2 text-sm mono">start a
+                project</a>
+        </div>
+    </nav>
+
+    <main class="content-layer">
+
+        <!-- ACT 1 : GENESIS SPARK -->
+        <section id="genesis" class="section min-h-screen flex items-center pt-28 pb-20">
+            <div class="max-w-7xl mx-auto px-6 md:px-10 w-full grid lg:grid-cols-2 gap-14 items-center">
+                <div>
+                    <div class="tag-badge mb-8">
+                        <span class="w-1.5 h-1.5 rounded-full" style="background:var(--amber)"></span>
+                        AVAILABLE FOR Q2/Q3 ENTERPRISE BUILDS
+                    </div>
+                    <h1
+                        class="font-display text-[13vw] leading-[0.95] sm:text-6xl lg:text-[3.6rem] font-semibold tracking-tight">
+                        We turn ideas into production-ready digital products.
+                    </h1>
+                    <p class="mt-6 text-lg max-w-lg" style="color:var(--ink-dim)">
+                        We design and engineer complete software solutions — from SaaS platforms and web applications to
+                        mobile apps, APIs, cloud infrastructure, and hosting.
+                    </p>
+                    <div class="mt-4 tag-badge" style="border-color:transparent; padding-left:0;">
+                        ⚡ Created by BlackCoder × BlueHacker
+                    </div>
+                    <div class="mt-10 flex flex-wrap items-center gap-4">
+                        <a href="#launchpad" class="btn-primary rounded-full px-7 py-3.5 mono text-sm">Start a
+                            Project</a>
+                        <a href="#engine" class="btn-ghost rounded-full px-7 py-3.5 mono text-sm">Explore The Engine
+                            ↓</a>
+                    </div>
+                </div>
+
+                <div id="hero-code"
+                    class="codebox rounded-2xl card-hud p-6 text-[13px] leading-relaxed shadow-2xl mx-auto w-full max-w-md">
+                    <div class="flex items-center gap-2 mb-4 opacity-70">
+                        <span class="w-3 h-3 rounded-full" style="background:#FF5F57"></span>
+                        <span class="w-3 h-3 rounded-full" style="background:#FEBC2E"></span>
+                        <span class="w-3 h-3 rounded-full" style="background:#28C840"></span>
+                        <span class="ml-3 mono text-xs" style="color:var(--ink-faint)">system.config.ts</span>
+                    </div>
+                    <pre class="whitespace-pre-wrap"><span class="tok-kw">import</span> { <span class="tok-fn">createSystem</span> } <span class="tok-kw">from</span> <span class="tok-str">"@twile/core"</span>;
+
+<span class="tok-kw">interface</span> SystemConfig {
+  modules: <span class="tok-fn">Module</span>[];
+  offlineSync: <span class="tok-kw">boolean</span>;
+  regions: <span class="tok-num">26</span>;
+}
+
+<span class="tok-kw">const</span> app = <span class="tok-fn">createSystem</span>({
+  modules: [<span class="tok-str">"pos"</span>, <span class="tok-str">"inventory"</span>, <span class="tok-str">"payments"</span>],
+  offlineSync: <span class="tok-kw">true</span>,
+  <span class="tok-com">// zero bloat. zero downtime.</span>
+});
+
+app.<span class="tok-fn">deploy</span>(<span class="tok-str">"production"</span>);</pre>
+                </div>
+            </div>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-hint mono text-xs"
+                style="color:var(--ink-faint)">scroll to enter ↓</div>
+        </section>
+
+        <!-- ACT 2 : QUANTUM TUNNEL -->
+        <section id="tunnel" class="section h-[300vh]">
+            <div id="tunnel-pin" class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
+                <div id="tunnel-t" class="letter-t select-none">T</div>
+                <div class="absolute inset-0 pointer-events-none"
+                    style="background: radial-gradient(circle at 50% 50%, transparent 0%, var(--bg) 78%);"></div>
+            </div>
+        </section>
+
+        <!-- ACT 3 : COMMAND ENGINE -->
+        <section id="engine" class="section min-h-screen py-28 md:py-36">
+            <div class="max-w-7xl mx-auto px-6 md:px-10">
+                <div class="mono text-xs tracking-wide mb-4" style="color:var(--teal)">WHY CHOOSE TWILE TECH</div>
+                <h2 class="font-display text-4xl md:text-5xl font-semibold max-w-2xl tracking-tight">Engineered for zero
+                    failure, designed for extreme speed.</h2>
+
+                <div class="grid md:grid-cols-3 gap-6 mt-16">
+                    <div class="pillar-card card-hud rounded-2xl p-7">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-5"
+                            style="background:var(--teal-dim)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4DD0E1"
+                                stroke-width="1.8">
+                                <path d="M3 12h4l3 8 4-16 3 8h4" />
+                            </svg>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg mb-2">Offline-first resilience</h3>
+                        <p class="text-sm" style="color:var(--ink-dim)">Local-first SQLite syncing ensures your business
+                            never halts, even during total internet or power blackouts.</p>
+                    </div>
+                    <div class="pillar-card card-hud rounded-2xl p-7">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-5"
+                            style="background:var(--amber-dim)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFB84D"
+                                stroke-width="1.8">
+                                <path d="M13 2 3 14h8l-1 8 10-12h-8l1-8z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg mb-2">Sub-millisecond execution</h3>
+                        <p class="text-sm" style="color:var(--ink-dim)">Written in high-performance Go, Rust, and Bun.
+                            Zero bloat, instant response times.</p>
+                    </div>
+                    <div class="pillar-card card-hud rounded-2xl p-7">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-5"
+                            style="background:var(--teal-dim)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4DD0E1"
+                                stroke-width="1.8">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <path d="M3 9h18M9 21V9" />
+                            </svg>
+                        </div>
+                        <h3 class="font-display font-semibold text-lg mb-2">End-to-end ownership</h3>
+                        <p class="text-sm" style="color:var(--ink-dim)">From database schema to mobile UI and thermal
+                            POS printer hardware integration — we build the entire pipeline.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 4 : MULTI-PLATFORM TRIAD -->
+        <section id="triad" class="section h-[400vh]">
+            <div class="sticky top-0 h-screen overflow-hidden">
+                <div class="max-w-7xl mx-auto px-6 md:px-10 pt-10 relative z-10">
+                    <div class="mono text-xs tracking-wide" style="color:var(--amber)">ONE STREAM. THREE SURFACES.</div>
+                </div>
+                <div id="triad-track" class="triad-track">
+                    <div class="triad-panel">
+                        <div class="max-w-7xl mx-auto px-6 md:px-10 w-full grid lg:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <div class="mono text-sm mb-3" style="color:var(--ink-faint)">01 — WEB APPLICATION</div>
+                                <h3 class="font-display text-4xl font-semibold tracking-tight mb-4">Mission control for
+                                    enterprise operations</h3>
+                                <p style="color:var(--ink-dim)" class="max-w-md">Live charts, inventory grids, automated
+                                    ledger balancing, and role-based access — one console for the whole operation.</p>
+                            </div>
+                            <div class="card-hud rounded-2xl p-6 h-72 flex flex-col gap-3">
+                                <div class="flex gap-3">
+                                    <div class="flex-1 rounded-lg p-4" style="background:var(--bg-panel)">
+                                        <div class="mono text-xs" style="color:var(--ink-faint)">REVENUE</div>
+                                        <div class="font-display text-2xl mt-1" style="color:var(--teal)">TZS 4.2M</div>
+                                    </div>
+                                    <div class="flex-1 rounded-lg p-4" style="background:var(--bg-panel)">
+                                        <div class="mono text-xs" style="color:var(--ink-faint)">BRANCHES</div>
+                                        <div class="font-display text-2xl mt-1">14</div>
+                                    </div>
+                                </div>
+                                <div class="flex-1 rounded-lg p-4" style="background:var(--bg-panel)">
+                                    <svg viewBox="0 0 300 90" class="w-full h-full">
+                                        <polyline
+                                            points="0,70 30,55 60,60 90,35 120,42 150,20 180,28 210,15 240,25 270,10 300,18"
+                                            fill="none" stroke="#4DD0E1" stroke-width="2" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="triad-panel">
+                        <div class="max-w-7xl mx-auto px-6 md:px-10 w-full grid lg:grid-cols-2 gap-12 items-center">
+                            <div class="order-2 lg:order-1 flex justify-center">
+                                <div class="w-56 h-[26rem] rounded-[2.2rem] card-hud p-3"
+                                    style="transform: perspective(900px) rotateY(-14deg) rotateX(4deg);">
+                                    <div class="w-full h-full rounded-[1.7rem] p-4 flex flex-col"
+                                        style="background:var(--bg-panel)">
+                                        <div class="mono text-[10px]" style="color:var(--ink-faint)">SIMAMIA POS</div>
+                                        <div class="mt-4 rounded-lg p-3" style="background:var(--amber-dim)">
+                                            <div class="mono text-xs" style="color:var(--amber)">SCAN BARCODE</div>
+                                        </div>
+                                        <div class="mt-3 space-y-2 flex-1">
+                                            <div class="h-8 rounded" style="background:rgba(255,255,255,0.05)"></div>
+                                            <div class="h-8 rounded" style="background:rgba(255,255,255,0.05)"></div>
+                                            <div class="h-8 rounded" style="background:rgba(255,255,255,0.05)"></div>
+                                        </div>
+                                        <div class="mt-2 rounded-lg py-2 text-center mono text-xs font-semibold"
+                                            style="background:var(--amber); color:#201200">CHARGE TZS 18,500</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-1 lg:order-2">
+                                <div class="mono text-sm mb-3" style="color:var(--ink-faint)">02 — MOBILE &amp; EDGE
+                                </div>
+                                <h3 class="font-display text-4xl font-semibold tracking-tight mb-4">Point of sale in the
+                                    palm of your hand</h3>
+                                <p style="color:var(--ink-dim)" class="max-w-md">Instant touch sales, barcode scanning,
+                                    and local receipt generation — synced the moment a connection returns.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="triad-panel">
+                        <div class="max-w-7xl mx-auto px-6 md:px-10 w-full grid lg:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <div class="mono text-sm mb-3" style="color:var(--ink-faint)">03 — DISTRIBUTED BACKEND
+                                </div>
+                                <h3 class="font-display text-4xl font-semibold tracking-tight mb-4">Microsecond API
+                                    infrastructure</h3>
+                                <p style="color:var(--ink-dim)" class="max-w-md">PostgreSQL read replicas, Redis caching
+                                    tiers, and secure gateways distributed across regions.</p>
+                            </div>
+                            <div class="card-hud rounded-2xl p-6 h-72 relative overflow-hidden">
+                                <svg viewBox="0 0 340 220" class="w-full h-full">
+                                    <g stroke="rgba(255,255,255,0.15)" stroke-width="1">
+                                        <line x1="170" y1="30" x2="60" y2="100" />
+                                        <line x1="170" y1="30" x2="170" y2="100" />
+                                        <line x1="170" y1="30" x2="280" y2="100" />
+                                        <line x1="60" y1="100" x2="60" y2="180" />
+                                        <line x1="170" y1="100" x2="170" y2="180" />
+                                        <line x1="280" y1="100" x2="280" y2="180" />
+                                    </g>
+                                    <circle cx="170" cy="30" r="10" fill="#0E1216" stroke="#FFB84D" stroke-width="2" />
+                                    <circle cx="60" cy="100" r="9" fill="#0E1216" stroke="#4DD0E1" stroke-width="2" />
+                                    <circle cx="170" cy="100" r="9" fill="#0E1216" stroke="#4DD0E1" stroke-width="2" />
+                                    <circle cx="280" cy="100" r="9" fill="#0E1216" stroke="#4DD0E1" stroke-width="2" />
+                                    <circle cx="60" cy="180" r="7" fill="#0E1216" stroke="#565F63" stroke-width="2" />
+                                    <circle cx="170" cy="180" r="7" fill="#0E1216" stroke="#565F63" stroke-width="2" />
+                                    <circle cx="280" cy="180" r="7" fill="#0E1216" stroke="#565F63" stroke-width="2" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 5 : CRUCIBLE PIPELINE -->
+        <section id="services" class="section min-h-screen py-28 md:py-36">
+            <div class="max-w-7xl mx-auto px-6 md:px-10">
+                <div class="mono text-xs tracking-wide mb-4" style="color:var(--teal)">OUR CAPABILITIES &amp; SERVICES
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl font-semibold max-w-2xl tracking-tight">Complete lifecycle
+                    software engineering</h2>
+
+                <div class="mt-16 space-y-3">
+                    <div class="service-row card-hud rounded-xl p-6 grid md:grid-cols-[auto_1fr] gap-5 items-start">
+                        <div class="mono text-2xl" style="color:var(--ink-faint)">01</div>
+                        <div>
+                            <h3 class="font-display font-semibold text-lg mb-1">Custom SaaS &amp; web apps</h3>
+                            <p class="text-sm" style="color:var(--ink-dim)">Bespoke dashboards, CRM platforms, and
+                                customer-facing portals built on Next.js &amp; React 19.</p>
+                        </div>
+                    </div>
+                    <div class="service-row card-hud rounded-xl p-6 grid md:grid-cols-[auto_1fr] gap-5 items-start">
+                        <div class="mono text-2xl" style="color:var(--ink-faint)">02</div>
+                        <div>
+                            <h3 class="font-display font-semibold text-lg mb-1">Mobile app development</h3>
+                            <p class="text-sm" style="color:var(--ink-dim)">Cross-platform Flutter &amp; React Native
+                                apps with native performance and offline storage.</p>
+                        </div>
+                    </div>
+                    <div class="service-row card-hud rounded-xl p-6 grid md:grid-cols-[auto_1fr] gap-5 items-start">
+                        <div class="mono text-2xl" style="color:var(--ink-faint)">03</div>
+                        <div>
+                            <h3 class="font-display font-semibold text-lg mb-1">Fintech &amp; payment rails</h3>
+                            <p class="text-sm" style="color:var(--ink-dim)">Direct automated integrations for M-Pesa,
+                                Airtel Money, Tigo Pesa, Stripe, and banks.</p>
+                        </div>
+                    </div>
+                    <div class="service-row card-hud rounded-xl p-6 grid md:grid-cols-[auto_1fr] gap-5 items-start">
+                        <div class="mono text-2xl" style="color:var(--ink-faint)">04</div>
+                        <div>
+                            <h3 class="font-display font-semibold text-lg mb-1">Cloud infrastructure &amp; DevOps</h3>
+                            <p class="text-sm" style="color:var(--ink-dim)">Dockerized microservices, automated CI/CD
+                                test suites, Kubernetes, and global CDN caching.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <svg id="circuit" class="w-full mt-10 hidden md:block" viewBox="0 0 1000 20" height="20">
+                    <line x1="20" y1="10" x2="980" y2="10" stroke="rgba(255,255,255,0.12)" stroke-width="2" />
+                    <line id="circuit-pulse" x1="20" y1="10" x2="20" y2="10" stroke="#FFB84D" stroke-width="2" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- ACT 6 : REAL-WORLD PROOF -->
+        <section id="proof" class="section min-h-screen py-28 md:py-36" style="background:var(--bg-raised)">
+            <div class="max-w-7xl mx-auto px-6 md:px-10">
+                <div class="mono text-xs tracking-wide mb-4" style="color:var(--amber)">METRICS &amp; CASE STUDIES</div>
+                <h2 class="font-display text-4xl md:text-5xl font-semibold max-w-2xl tracking-tight">Battle-tested in
+                    real production environments.</h2>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+                    <div>
+                        <div class="counter font-display text-4xl md:text-5xl font-semibold" style="color:var(--teal)"
+                            data-count="99.999" data-suffix="%">0</div>
+                        <div class="text-sm mt-2" style="color:var(--ink-dim)">Cloud uptime SLA</div>
+                    </div>
+                    <div>
+                        <div class="counter font-display text-4xl md:text-5xl font-semibold" data-count="5"
+                            data-prefix="< " data-suffix="ms">0</div>
+                        <div class="text-sm mt-2" style="color:var(--ink-dim)">Avg. query latency</div>
+                    </div>
+                    <div>
+                        <div class="counter font-display text-4xl md:text-5xl font-semibold" style="color:var(--amber)"
+                            data-count="26" data-suffix="+">0</div>
+                        <div class="text-sm mt-2" style="color:var(--ink-dim)">Regions active</div>
+                    </div>
+                    <div>
+                        <div class="counter font-display text-4xl md:text-5xl font-semibold" data-count="100"
+                            data-suffix="%">0</div>
+                        <div class="text-sm mt-2" style="color:var(--ink-dim)">Offline data recovery</div>
+                    </div>
+                </div>
+
+                <div class="mt-20 card-hud rounded-2xl p-8 md:p-10 grid md:grid-cols-[1fr_auto] gap-8 items-center">
+                    <div>
+                        <div class="mono text-xs mb-3" style="color:var(--ink-faint)">FEATURED CASE STUDY</div>
+                        <h3 class="font-display text-2xl font-semibold mb-3">Simamia POS &amp; ERP</h3>
+                        <p style="color:var(--ink-dim)" class="max-w-xl">Reduced checkout times by 80%, eliminated
+                            reconciliation errors, and gave real-time multi-branch stock visibility.</p>
+                    </div>
+                    <div class="relative w-full md:w-64 h-36 rounded-xl overflow-hidden"
+                        style="background:var(--bg-panel)">
+                        <div id="before-after" class="absolute inset-0" style="clip-path: inset(0 50% 0 0)">
+                            <div class="w-full h-full flex items-center justify-center mono text-xs"
+                                style="color:var(--teal); background:var(--teal-dim)">DIGITAL</div>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center mono text-xs -z-10"
+                            style="color:var(--ink-faint)">PAPER LEDGER</div>
+                        <input id="ba-slider" type="range" min="0" max="100" value="50"
+                            class="absolute bottom-2 left-2 right-2 w-[calc(100%-1rem)]">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 7 : THE ARCHITECTS -->
+        <section id="about" class="section min-h-screen py-28 md:py-36">
+            <div class="max-w-7xl mx-auto px-6 md:px-10 grid lg:grid-cols-2 gap-14 items-start">
+                <div>
+                    <div class="mono text-xs tracking-wide mb-4" style="color:var(--teal)">THE CRAFTSMEN BEHIND THE
+                        SYSTEM</div>
+                    <h2 class="font-display text-4xl md:text-5xl font-semibold tracking-tight mb-6">Software crafted
+                        with extreme care</h2>
+                    <p style="color:var(--ink-dim)" class="max-w-md">Founded by BlackCoder × BlueHacker, Twile Tech was
+                        born out of a passion for high-craftsmanship code and a refusal to build slow, generic software.
+                        We treat code as engineering art.</p>
+                </div>
+
+                <div class="terminal-window rounded-xl p-6 mono text-sm">
+                    <div class="flex items-center gap-2 mb-4 opacity-70">
+                        <span class="w-3 h-3 rounded-full" style="background:#FF5F57"></span>
+                        <span class="w-3 h-3 rounded-full" style="background:#FEBC2E"></span>
+                        <span class="w-3 h-3 rounded-full" style="background:#28C840"></span>
+                    </div>
+                    <div id="terminal-output" class="space-y-1 min-h-[9rem]"></div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span style="color:var(--teal)">twile@terminal:~$</span>
+                        <input id="terminal-input" class="bg-transparent outline-none flex-1" style="color:var(--ink)"
+                            placeholder="type help" autocomplete="off">
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <button data-cmd="help" class="btn-ghost rounded-full px-3 py-1 text-xs">help</button>
+                        <button data-cmd="stack" class="btn-ghost rounded-full px-3 py-1 text-xs">stack</button>
+                        <button data-cmd="status" class="btn-ghost rounded-full px-3 py-1 text-xs">status</button>
+                        <button data-cmd="contact" class="btn-ghost rounded-full px-3 py-1 text-xs">contact</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 8 : LAUNCHPAD -->
+        <section id="launchpad" class="section min-h-screen py-28 md:py-36 flex items-center"
+            style="background:var(--bg-raised)">
+            <div class="max-w-5xl mx-auto px-6 md:px-10 w-full">
+                <div class="mono text-xs tracking-wide mb-4" style="color:var(--amber)">CONTACT &amp; PROJECT INTAKE
+                </div>
+                <h2 class="font-display text-4xl md:text-5xl font-semibold tracking-tight mb-10">Your idea is ready for
+                    takeoff.</h2>
+
+                <div class="rounded-2xl p-8 md:p-10"
+                    style="border:1px solid var(--amber); box-shadow: 0 0 60px -12px rgba(255,184,77,0.25);">
+                    <div class="mb-8">
+                        <div class="mono text-xs mb-3" style="color:var(--ink-faint)">STEP 1 — CHOOSE YOUR PLATFORM
+                        </div>
+                        <div id="platform-opts" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center" data-active="true"
+                                data-val="Web App">Web App</div>
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center"
+                                data-val="Mobile App">Mobile App</div>
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center"
+                                data-val="Custom ERP">Custom ERP</div>
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center"
+                                data-val="API Gateway">API Gateway</div>
+                        </div>
+                    </div>
+                    <div class="mb-8">
+                        <div class="mono text-xs mb-3" style="color:var(--ink-faint)">STEP 2 — CHOOSE INFRASTRUCTURE
+                            TIER</div>
+                        <div id="tier-opts" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center" data-active="true"
+                                data-val="Startup MVP">Startup MVP</div>
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center"
+                                data-val="Growth Scale">Growth Scale</div>
+                            <div class="step-opt card-hud rounded-lg px-4 py-3 text-sm text-center"
+                                data-val="Enterprise Distributed">Enterprise Distributed</div>
+                        </div>
+                    </div>
+
+                    <div class="mono text-xs p-4 rounded-lg mb-6"
+                        style="background:var(--bg-panel); color:var(--ink-dim)">
+                        BLUEPRINT → <span id="blueprint-text" style="color:var(--teal)">Web App / Startup MVP</span>
+                    </div>
+
+                    <button id="blueprint-btn"
+                        class="btn-primary rounded-full px-7 py-3.5 mono text-sm w-full md:w-auto">Generate Project
+                        Blueprint &amp; Schedule Discovery Call</button>
+                </div>
+
+                <div class="mt-14 flex flex-wrap gap-x-10 gap-y-4 text-sm" style="color:var(--ink-dim)">
+                    <a href="mailto:info@twile.co.tz" class="hover:text-white">info@twile.co.tz</a>
+                    <span>Phone / WhatsApp</span>
+                    <span>GitHub</span>
+                    <span>LinkedIn</span>
+                    <span>Twitter / X</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-8 border-t" style="border-color:var(--line)">
+            <div class="max-w-7xl mx-auto px-6 md:px-10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs mono"
+                style="color:var(--ink-faint)">
+                <span>© 2026 Twile Tech. All rights reserved.</span>
+                <div class="flex gap-6"><span>Privacy</span><span>Terms</span></div>
+                <span>Engineered by BlackCoder × BlueHacker 🇹🇿</span>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            gsap.registerPlugin(ScrollTrigger);
+
+            /* ---------- Lenis smooth scroll ---------- */
+            try {
+                if (!reduceMotion && window.Lenis) {
+                    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+                    lenis.on('scroll', ScrollTrigger.update);
+                    gsap.ticker.add((time) => lenis.raf(time * 1000));
+                    gsap.ticker.lagSmoothing(0);
+                }
+            } catch (e) { console.warn('Lenis init failed', e); }
+
+            /* ---------- Background particle canvas ---------- */
+            try {
+                const canvas = document.getElementById('bg-canvas');
+                const ctx = canvas.getContext('2d');
+                let w, h, particles = [];
+                const mouse = { x: -9999, y: -9999 };
+                function resize() {
+                    w = canvas.width = window.innerWidth;
+                    h = canvas.height = document.documentElement.scrollHeight;
+                    const count = Math.min(110, Math.floor((w * h) / 26000));
+                    particles = new Array(count).fill(0).map(() => ({
+                        x: Math.random() * w, y: Math.random() * h,
+                        vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15,
+                        r: Math.random() * 1.6 + 0.6,
+                        c: Math.random() > 0.5 ? '77,208,225' : '255,184,77'
+                    }));
+                }
+                window.addEventListener('resize', resize);
+                window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY + window.scrollY; });
+                resize();
+                function tick() {
+                    ctx.clearRect(0, 0, w, h);
+                    particles.forEach(p => {
+                        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 140) {
+                            const f = (140 - dist) / 140 * 0.6;
+                            p.vx += (dx / dist) * f * 0.05;
+                            p.vy += (dy / dist) * f * 0.05;
+                        }
+                        p.vx *= 0.98; p.vy *= 0.98;
+                        p.x += p.vx; p.y += p.vy;
+                        if (p.x < 0 || p.x > w) p.vx *= -1;
+                        if (p.y < 0 || p.y > h) p.vy *= -1;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y - window.scrollY, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${p.c},0.5)`;
+                        ctx.fill();
+                    });
+                    requestAnimationFrame(tick);
+                }
+                if (!reduceMotion) tick(); else ctx.clearRect(0, 0, w, h);
+            } catch (e) { console.warn('particle bg failed', e); }
+
+            /* ---------- Hero magnetic tilt ---------- */
+            const heroCode = document.getElementById('hero-code');
+            if (heroCode && !reduceMotion) {
+                heroCode.addEventListener('mousemove', (e) => {
+                    const r = heroCode.getBoundingClientRect();
+                    const px = (e.clientX - r.left) / r.width - 0.5;
+                    const py = (e.clientY - r.top) / r.height - 0.5;
+                    gsap.to(heroCode, { rotateY: px * 10, rotateX: -py * 10, duration: 0.4, ease: 'power2.out' });
+                });
+                heroCode.addEventListener('mouseleave', () => gsap.to(heroCode, { rotateY: 0, rotateX: 0, duration: 0.6, ease: 'power2.out' }));
+            }
+
+            /* ---------- ACT 2: Quantum tunnel zoom ---------- */
+            gsap.to('#tunnel-t', {
+                scale: 85,
+                ease: 'power1.in',
+                scrollTrigger: {
+                    trigger: '#tunnel',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: 0.6,
+                    pin: '#tunnel-pin',
+                }
+            });
+            gsap.to('#tunnel-t', {
+                filter: 'blur(6px)',
+                color: 'var(--teal)',
+                scrollTrigger: {
+                    trigger: '#tunnel',
+                    start: '60% top',
+                    end: 'bottom bottom',
+                    scrub: 0.6,
+                }
+            });
+
+            /* ---------- ACT 3: pillar reveal (single orchestrated entrance) ---------- */
+            gsap.from('#engine h2, #engine .mono', { y: 24, opacity: 0, duration: 0.8, ease: 'power2.out', scrollTrigger: { trigger: '#engine', start: 'top 75%' } });
+            gsap.from('.pillar-card', { y: 30, opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out', scrollTrigger: { trigger: '#engine', start: 'top 55%' } });
+
+            /* ---------- ACT 4: horizontal pinned triad ---------- */
+            const track = document.getElementById('triad-track');
+            gsap.to(track, {
+                x: () => -(track.scrollWidth - window.innerWidth),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#triad',
+                    start: 'top top',
+                    end: () => '+=' + (track.scrollWidth - window.innerWidth),
+                    scrub: 0.6,
+                    pin: true,
+                    invalidateOnRefresh: true,
+                }
+            });
+
+            /* ---------- ACT 5: circuit pulse + row reveal ---------- */
+            gsap.from('.service-row', { x: -20, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'power2.out', scrollTrigger: { trigger: '#services', start: 'top 65%' } });
+            const pulse = document.getElementById('circuit-pulse');
+            if (pulse) {
+                gsap.to(pulse, {
+                    attr: { x2: 980 },
+                    ease: 'none',
+                    scrollTrigger: { trigger: '#services', start: 'top 60%', end: 'bottom bottom', scrub: 0.6 }
+                });
+            }
+
+            /* ---------- ACT 6: number counters ---------- */
+            document.querySelectorAll('.counter').forEach(el => {
+                const target = parseFloat(el.dataset.count);
+                const suffix = el.dataset.suffix || '';
+                const prefix = el.dataset.prefix || '';
+                const decimals = (el.dataset.count.split('.')[1] || '').length;
+                const obj = { val: 0 };
+                ScrollTrigger.create({
+                    trigger: el, start: 'top 85%', once: true,
+                    onEnter: () => {
+                        gsap.to(obj, {
+                            val: target, duration: 1.6, ease: 'power2.out',
+                            onUpdate: () => { el.textContent = prefix + obj.val.toFixed(decimals) + suffix; }
+                        });
+                    }
+                });
+            });
+
+            /* before/after slider */
+            const baSlider = document.getElementById('ba-slider');
+            const beforeAfter = document.getElementById('before-after');
+            if (baSlider) {
+                baSlider.addEventListener('input', () => {
+                    beforeAfter.style.clipPath = `inset(0 ${100 - baSlider.value}% 0 0)`;
+                });
+            }
+
+            /* ---------- ACT 7: terminal ---------- */
+            const output = document.getElementById('terminal-output');
+            const input = document.getElementById('terminal-input');
+            const RESPONSES = {
+                help: 'commands: help, stack, status, contact',
+                stack: '[TypeScript, Go, Rust, Next.js, Supabase, Flutter, Kubernetes]',
+                status: 'ALL_SYSTEMS_OPERATIONAL [Deployments: Active]',
+                whoami: 'BlackCoder x BlueHacker — engineers, Twile Tech',
+                contact: 'info@twile.co.tz',
+            };
+            function printLine(text, color) {
+                const line = document.createElement('div');
+                line.textContent = text;
+                if (color) line.style.color = color;
+                output.appendChild(line);
+                output.scrollTop = output.scrollHeight;
+            }
+            function runCmd(cmd) {
+                cmd = cmd.trim().toLowerCase();
+                if (!cmd) return;
+                printLine('twile@terminal:~$ ' + cmd, 'var(--ink-dim)');
+                printLine('=> ' + (RESPONSES[cmd] || `command not found: ${cmd}`), RESPONSES[cmd] ? '#9CE39C' : '#FF8C8C');
+            }
+            if (input) {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') { runCmd(input.value); input.value = ''; }
+                });
+                document.querySelectorAll('[data-cmd]').forEach(btn => {
+                    btn.addEventListener('click', () => runCmd(btn.dataset.cmd));
+                });
+                printLine('twile@terminal:~$ twile --skills', 'var(--ink-dim)');
+                printLine('=> ' + RESPONSES.stack, '#9CE39C');
+            }
+
+            /* ---------- ACT 8: blueprint selector ---------- */
+            function wireSteps(containerId) {
+                const container = document.getElementById(containerId);
+                container.querySelectorAll('.step-opt').forEach(opt => {
+                    opt.addEventListener('click', () => {
+                        container.querySelectorAll('.step-opt').forEach(o => o.dataset.active = 'false');
+                        opt.dataset.active = 'true';
+                        updateBlueprint();
+                    });
+                });
+            }
+            function updateBlueprint() {
+                const platform = document.querySelector('#platform-opts [data-active="true"]').dataset.val;
+                const tier = document.querySelector('#tier-opts [data-active="true"]').dataset.val;
+                document.getElementById('blueprint-text').textContent = `${platform} / ${tier}`;
+            }
+            wireSteps('platform-opts');
+            wireSteps('tier-opts');
+
+            const blueprintBtn = document.getElementById('blueprint-btn');
+            if (blueprintBtn) {
+                blueprintBtn.addEventListener('click', () => {
+                    const text = document.getElementById('blueprint-text').textContent;
+                    blueprintBtn.textContent = `Blueprint ready — ${text}. We'll be in touch.`;
+                    gsap.fromTo(blueprintBtn, { scale: 0.97 }, { scale: 1, duration: 0.35, ease: 'back.out(2)' });
+                });
+            }
+
+            ScrollTrigger.refresh();
+        });
+    </script>
+
+</body>
+
+</html>

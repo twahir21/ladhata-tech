@@ -1,7 +1,6 @@
 "use client";
 
 import { forwardRef } from "react";
-import { DashboardMock } from "./mocks/DashboardMock";
 import { COLORS } from "@/const/colors";
 
 interface StoryProps {
@@ -41,13 +40,27 @@ export const StorySection = forwardRef<HTMLElement, StoryProps>(function StorySe
           aspectRatio: "16 / 10",
           borderRadius: "20px",
           overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.12)",
-          boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
           transform: "scale(0.5)",
           opacity: 0,
+          background: "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <DashboardMock />
+        <span
+          style={{
+            fontFamily: "var(--font-jetbrains-mono), monospace",
+            fontWeight: 800,
+            fontSize: "clamp(6rem, 16vw, 14rem)",
+            color: "#ffffff",
+            lineHeight: 1,
+            userSelect: "none",
+            letterSpacing: "-0.04em",
+          }}
+        >
+          T
+        </span>
       </div>
     </section>
   );
