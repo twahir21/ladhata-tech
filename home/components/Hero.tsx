@@ -78,7 +78,7 @@ export const HeroSection = ({
           marginBottom: "1.25rem",
         }}
       >
-        Ladhata Tech Solution — Dar es Salaam
+        Build. Launch. Scale.
       </p>
 
       <h1
@@ -93,7 +93,7 @@ export const HeroSection = ({
           maxWidth: "18ch",
         }}
       >
-        Waandishi wa Mifumo na Programu za Kidigitali Tanzania
+        We turn ideas into production-ready digital products.
       </h1>
 
       <p
@@ -107,12 +107,10 @@ export const HeroSection = ({
           lineHeight: 1.6,
         }}
       >
-        Tunatengeneza programu za simu na mifumo ya wavuti (Full-Stack
-        Development) inayotatua changamoto halisi za kibiashara. Tulianza safari
-        yetu na Simamia App—suluhisho la mauzo na stoki—na sasa tunajenga mifumo
-        maalum ya VICOBA, shule, na malipo inayoeleweka na kurahisisha
-        uendeshaji wa biashara za Kitanzania.
+        We design and engineer complete software solutions—from SaaS platforms and web applications to mobile apps, APIs, cloud infrastructure, and hosting in Tanzania
       </p>
+
+      <p>By BlackCoder × BlueHacker</p>
 
       <div
         style={{
@@ -135,7 +133,7 @@ export const HeroSection = ({
             textDecoration: "none",
           }}
         >
-          Angalia Simamia App
+          Start a Project
         </a>
         <a
           href="#sequence"
@@ -150,7 +148,7 @@ export const HeroSection = ({
             textDecoration: "none",
           }}
         >
-          Tunavyojenga
+          Explore Our Work
         </a>
       </div>
     </div>
