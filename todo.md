@@ -29,12 +29,12 @@ A bold heading ("We Build the Digital Engines for East African Enterprises") pai
 A dedicated interactive split section. On one side, highlight Simamia App (sales tracking, offline mode). On the other side, show a responsive smartphone canvas that shifts perspective based on which feature the user is hovering over.
 3. Interactive Technology Stack Explorer
 
-A interactive grid showing what Ladhata Tech Solutions builds with (Next.js, Bun, Go, Supabase).
+A interactive grid showing what Twile Tech Solutions builds with (Next.js, Bun, Go, Supabase).
 
 
 
 ### prompt
-Coding Prompt: Ladhata Tech Solutions Hero Page (Next.js + R3F)
+Coding Prompt: Twile Tech Solutions Hero Page (Next.js + R3F)
 
 I need you to generate the code for a premium, performant hero section for a technology company landing page, using Next.js (App Router), TypeScript, and Tailwind CSS.
 
@@ -69,13 +69,13 @@ A. HTML Overlay Layer (z-10):
 
 B. Three.js Background Layer (-z-10):
 
-    Create a dedicated <LadhataHeroScene/> component for the R3F Canvas.
+    Create a dedicated <TwileHeroScene/> component for the R3F Canvas.
 
     Setting: Canvas must be app-level or full-screen, fixed or absolute inset-0, -z-10, with devicePixelRatio optimized for performance. Use <color attach="background" args={['#09090B']} />.
 
 4. The 3D/Interactive Visuals (Crucial Interactivity)
 
-Inside the <LadhataHeroScene/>, implement the following:
+Inside the <TwileHeroScene/>, implement the following:
 
 A. The Base Visual (3D Particle Field/Network):
 
@@ -101,4 +101,4 @@ C. Post-Processing (Premium Feel):
 
 5. Output Expectation
 
-Please provide the complete, structured code for the necessary Next.js components (page.tsx and the internal R3F components like LadhataHeroScene.tsx), including all required imports, TypeScript types, and Tailwind classes. Focus on modularity and performance, ensuring the 3D scene doesn't block the main thread.
+Please provide the complete, structured code for the necessary Next.js components (page.tsx and the internal R3F components like TwileHeroScene.tsx), including all required imports, TypeScript types, and Tailwind classes. Focus on modularity and performance, ensuring the 3D scene doesn't block the main thread.

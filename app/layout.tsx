@@ -19,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ladhata Tech Solution",
+  title: "Twile Tech Solution",
   description: "Tunabadilisha biashara za Tanzania kuwa dijitali.",
 };
 
