@@ -15,8 +15,8 @@ export function MobileMock() {
       style={{
         width: "280px",
         height: "580px",
-        borderRadius: "36px",
-        border: `8px solid ${COLORS.night}`,
+        borderRadius: "44px",
+        border: `10px solid ${COLORS.night}`,
         background: COLORS.surface,
         boxShadow: "0 40px 80px rgba(0,0,0,0.5)",
         overflow: "hidden",
@@ -25,11 +25,48 @@ export function MobileMock() {
         fontFamily: "var(--font-inter), sans-serif",
       }}
     >
-      {/* Status bar */}
-      <div style={{ height: "28px", background: COLORS.night }} />
+      {/* Dynamic Island / Notch */}
+      <div
+        style={{
+          position: "relative",
+          height: "36px",
+          background: COLORS.night,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "100px",
+            height: "28px",
+            background: "#000",
+            borderRadius: "20px",
+          }}
+        />
+      </div>
+
+      {/* Status Bar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.2rem 1.5rem 0",
+          fontSize: "0.65rem",
+          color: COLORS.paper,
+          fontWeight: 600,
+        }}
+      >
+        <span>9:41</span>
+        <span style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+          <span>5G</span>
+          <span>●●●</span>
+        </span>
+      </div>
 
       {/* Header */}
-      <div style={{ padding: "1.25rem 1.25rem 1rem" }}>
+      <div style={{ padding: "0.5rem 1.25rem 0.9rem" }}>
         <div style={{ fontSize: "0.7rem", color: COLORS.muted }}>Habari,</div>
         <div
           style={{
@@ -106,7 +143,7 @@ export function MobileMock() {
         style={{
           display: "flex",
           justifyContent: "space-around",
-          padding: "0.9rem 0",
+          padding: "0.9rem 0 0.6rem",
           borderTop: "1px solid rgba(255,255,255,0.08)",
         }}
       >
@@ -122,6 +159,24 @@ export function MobileMock() {
             {tab}
           </div>
         ))}
+      </div>
+
+      {/* Home Indicator */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          paddingBottom: "0.4rem",
+        }}
+      >
+        <div
+          style={{
+            width: "120px",
+            height: "5px",
+            borderRadius: "999px",
+            background: "rgba(255,255,255,0.3)",
+          }}
+        />
       </div>
     </div>
   );
