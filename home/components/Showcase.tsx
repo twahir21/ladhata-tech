@@ -1,25 +1,43 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { DashboardMock } from "./mocks/DashboardMock";
+import { DashboardSmallMock } from "./mocks/DashboardSmallMock";
 import { MobileMock } from "./mocks/MobileMock";
 import { BackendMock } from "./mocks/BackendMock";
+import { BackendSmallMock } from "./mocks/BackendSmallMock";
 import { COLORS } from "@/const/colors";
 
 interface Props {
   trackRef: React.RefObject<HTMLDivElement | null>;
 }
 
-// `card: true` marks the mocks that are full-bleed (they paint their own dark
-// background across the whole panel), so they get inset + rounded on the white.
-const PANELS = [
-  { tag: "01 — WEB", title: "Dashibodi ya Simamia", card: true },
-  { tag: "02 — MOBILE", title: "Programu ya mfanyabiashara", card: false },
-  { tag: "03 — BACKEND", title: "Miundombinu inayotegemewa", card: true },
+const PANELS_LARGE = [
+  { tag: "01 — WEB", title: "Dashibodi ya Simamia", card: true, Mock: DashboardMock },
+  { tag: "02 — MOBILE", title: "Programu ya mfanyabiashara", card: false, Mock: MobileMock },
+  { tag: "03 — BACKEND", title: "Miundombinu inayotegemewa", card: true, Mock: BackendMock },
+];
+
+const PANELS_SMALL = [
+  { tag: "01 — WEB", title: "Dashibodi ya Simamia", card: false, Mock: DashboardSmallMock },
+  { tag: "02 — MOBILE", title: "Programu ya mfanyabiashara", card: false, Mock: MobileMock },
+  { tag: "03 — BACKEND", title: "Miundombinu inayotegemewa", card: false, Mock: BackendSmallMock },
 ];
 
 export const HorizontalShowcaseSection = forwardRef<HTMLElement, Props>(
   function HorizontalShowcaseSection({ trackRef }, ref) {
+    const [isSmall, setIsSmall] = useState(false);
+
+    useEffect(() => {
+      const mq = window.matchMedia("(max-width: 768px)");
+      setIsSmall(mq.matches);
+      const handler = (event: MediaQueryListEvent) => setIsSmall(event.matches);
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }, []);
+
+    const panels = isSmall ? PANELS_SMALL : PANELS_LARGE;
+
     return (
       <section
         ref={ref}
@@ -28,7 +46,6 @@ export const HorizontalShowcaseSection = forwardRef<HTMLElement, Props>(
           position: "relative",
           height: "100vh",
           overflow: "hidden",
-          // continues the solid white the TWILE zoom lands on
           background: "#ffffff",
         }}
       >
@@ -37,11 +54,11 @@ export const HorizontalShowcaseSection = forwardRef<HTMLElement, Props>(
           style={{
             display: "flex",
             height: "100%",
-            width: "300vw", // 3 panels × 100vw
+            width: `${panels.length * 100}vw`,
           }}
         >
-          {[DashboardMock, MobileMock, BackendMock].map((Mock, i) => {
-            const { tag, title, card } = PANELS[i];
+          {panels.map(({ tag, title, card, Mock }) => {
+            const isDashboard = Mock === DashboardMock || Mock === DashboardSmallMock;
             return (
               <div
                 key={tag}
@@ -55,7 +72,21 @@ export const HorizontalShowcaseSection = forwardRef<HTMLElement, Props>(
                   gap: "clamp(0.9rem, 2vw, 1.5rem)",
                 }}
               >
-                {/* the mock floats as an inset card on the white background */}
+                {isDashboard && (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      fontFamily: "var(--font-space-grotesk), sans-serif",
+                      fontWeight: 700,
+                      fontSize: "clamp(1.5rem, 3vw, 2.25rem)",
+                      color: COLORS.night,
+                      letterSpacing: "0.02em",
+                    }}
+                  >
+                    {title}
+                  </div>
+                )}
+
                 <div
                   style={{
                     flex: 1,
@@ -71,7 +102,6 @@ export const HorizontalShowcaseSection = forwardRef<HTMLElement, Props>(
                   <Mock />
                 </div>
 
-                {/* caption sits on the white now, so it has to be dark to stay readable */}
                 <div
                   style={{
                     display: "flex",
