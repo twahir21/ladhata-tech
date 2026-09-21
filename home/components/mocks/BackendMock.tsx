@@ -23,8 +23,10 @@ export function BackendMock() {
     <div
       style={{
         display: "flex",
-        width: "100%",
-        height: "100%",
+        width: "80%",
+        height: "80%",
+        borderRadius: "24px",
+        overflow: "hidden",
         background: COLORS.night,
         fontFamily: "var(--font-jetbrains-mono), monospace",
       }}
