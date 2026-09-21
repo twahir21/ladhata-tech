@@ -20,8 +20,10 @@ export function DashboardMock() {
     <div
       style={{
         display: "flex",
-        width: "100%",
-        height: "100%",
+        width: "80%",
+        height: "80%",
+        borderRadius: "24px",
+        overflow: "hidden",
         background: COLORS.surface,
         fontFamily: "var(--font-inter), sans-serif",
       }}
@@ -67,7 +69,21 @@ export function DashboardMock() {
       </div>
 
       {/* Main */}
-      <div style={{ flex: 1, padding: "1.25rem 1.5rem", overflow: "hidden" }}>
+      <div style={{ flex: 1, padding: "1.75rem 2rem 0.75rem 2rem", overflow: "hidden" }}>
+        {/* Title */}
+        <div
+          style={{
+            fontFamily: "var(--font-space-grotesk), sans-serif",
+            fontWeight: 700,
+            fontSize: "1.35rem",
+            color: COLORS.paper,
+            marginBottom: "1.25rem",
+            letterSpacing: "0.02em",
+          }}
+        >
+          Dashboard
+        </div>
+
         {/* Stat cards */}
         <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.25rem" }}>
           {STATS.map((s) => (
